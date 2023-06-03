@@ -31,6 +31,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import tw.pu.edu.csim.ruby.afinal.ui.theme.FinalTheme
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.unit.dp
 
 
 class MainActivity : ComponentActivity() {
@@ -62,21 +68,27 @@ fun Greeting(name: String) {
     val context = LocalContext.current
     val showMenu = remember { mutableStateOf(false) }
     var Animals = arrayListOf(R.drawable.game)
-
+    val uriHandler = LocalUriHandler.current
 
     Column {
         TopAppBar(
             title = { Text(text = "It's game time!") },
             navigationIcon = {
-                IconButton(onClick = {
-                    Toast.makeText(context, "您點選了導覽圖示", Toast.LENGTH_SHORT).show()
-                }) {
+                IconButton(
+                    onClick = { showMenu.value = true }
+                ) {
                     Icon(Icons.Default.Menu, contentDescription = "Navigation icon")
                 }
             },
             actions = {
                 IconButton(
-                    onClick = { Toast.makeText(context, "作者：資管二A 第六組 \n 陳柔涵 王思婷 陳咨穎 陳怡嘉", Toast.LENGTH_SHORT).show() }
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "作者：資管二A 第六組 \n 陳柔涵 王思婷 陳咨穎 陳怡嘉",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 ) {
                     Icon(Icons.Rounded.AccountBox, contentDescription = "author")
                 }
@@ -91,18 +103,28 @@ fun Greeting(name: String) {
                 ) {
                     DropdownMenuItem(
                         onClick = {
-                            navController.navigate("JumpFirst")
+                            val url = "https://www.maria.org.tw/"
+                            uriHandler.openUri(url)
                         })
                     {
-                        Text(text = "畫面1")
+                        Text(text = "瑪利亞基金會")
+                    }
+                    DropdownMenuItem(
+                        onClick = {
+                            val url = "https://www.lovehome.org.tw/"
+                            uriHandler.openUri(url)
+                        })
+                    {
+                        Text(text = "瑪利亞基金會_愛心家園")
                     }
                     DropdownMenuItem(
                         onClick =
                         {
-                            navController.navigate("JumpSecond")
+                            val url = "https://www.facebook.com/groups/833298893358271/"
+                            uriHandler.openUri(url)
                         })
                     {
-                        Text(text = "畫面2")
+                        Text(text = "南社社區發展協會社團")
                     }
                 }
             }
@@ -148,9 +170,33 @@ fun Greeting(name: String) {
                 ThirteenScreen(navController = navController)
             }
         }
+        DropdownMenu(
+            expanded = showMenu.value,
+            onDismissRequest = { showMenu.value = false }
+        ) {
+            DropdownMenuItem(
+                onClick = {
+                    navController.navigate("JumpFirst") {
+                        popUpTo("JumpFirst") { inclusive = true }
+                    }
+                    showMenu.value = false
+                }
+            ) {
+                Text(text = "Menu Item 1")
+            }
+            DropdownMenuItem(
+                onClick = {
+                    navController.navigate("JumpSecond") {
+                        popUpTo("JumpSecond") { inclusive = true }
+                    }
+                    showMenu.value = false
+                }
+            ) {
+                Text(text = "Menu Item 2")
+            }
+        }
     }
 }
-
 
 
 
