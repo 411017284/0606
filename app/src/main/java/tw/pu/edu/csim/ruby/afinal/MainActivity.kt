@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,12 +30,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import tw.pu.edu.csim.ruby.afinal.ui.theme.FinalTheme
-import android.content.Intent
-import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
-import androidx.compose.ui.platform.LocalContext
+import android.media.MediaPlayer
+import android.widget.ImageButton
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.unit.dp
+
 
 
 class MainActivity : ComponentActivity() {
@@ -75,7 +72,7 @@ fun Greeting(name: String) {
             title = { Text(text = "It's game time!") },
             navigationIcon = {
                 IconButton(
-                    onClick = { showMenu.value = true }
+                    onClick = { Toast.makeText(context, "歡迎光臨", Toast.LENGTH_SHORT).show() }
                 ) {
                     Icon(Icons.Default.Menu, contentDescription = "Navigation icon")
                 }
@@ -83,11 +80,7 @@ fun Greeting(name: String) {
             actions = {
                 IconButton(
                     onClick = {
-                        Toast.makeText(
-                            context,
-                            "作者：資管二A 第六組 \n 陳柔涵 王思婷 陳咨穎 陳怡嘉",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, "作者：資管二A 第六組 \n 陳柔涵 王思婷 陳咨穎 陳怡嘉", Toast.LENGTH_SHORT).show()
                     }
                 ) {
                     Icon(Icons.Rounded.AccountBox, contentDescription = "author")
@@ -170,31 +163,6 @@ fun Greeting(name: String) {
                 ThirteenScreen(navController = navController)
             }
         }
-        DropdownMenu(
-            expanded = showMenu.value,
-            onDismissRequest = { showMenu.value = false }
-        ) {
-            DropdownMenuItem(
-                onClick = {
-                    navController.navigate("JumpFirst") {
-                        popUpTo("JumpFirst") { inclusive = true }
-                    }
-                    showMenu.value = false
-                }
-            ) {
-                Text(text = "Menu Item 1")
-            }
-            DropdownMenuItem(
-                onClick = {
-                    navController.navigate("JumpSecond") {
-                        popUpTo("JumpSecond") { inclusive = true }
-                    }
-                    showMenu.value = false
-                }
-            ) {
-                Text(text = "Menu Item 2")
-            }
-        }
     }
 }
 
@@ -202,63 +170,115 @@ fun Greeting(name: String) {
 
     @Composable
     fun FirstScreen(navController: NavController) {
+        val context = LocalContext.current
+        var mper = MediaPlayer()
+        val uriHandler = LocalUriHandler.current
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.LightGray),
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(20.dp))
             Image(
                 painter = painterResource(id = R.drawable.game),
                 contentDescription = ""
             )
             Spacer(modifier = Modifier.height(42.dp))
-
             Row()
             {
                 Button(onClick = {
                     navController.navigate("JumpSecond")
                 },
                     colors = ButtonDefaults.buttonColors
-                        (backgroundColor = androidx.compose.ui.graphics.Color.DarkGray),
+                        (backgroundColor = Color.Yellow),
                     shape = RoundedCornerShape(20.dp)
                 ) {
-                    Text(text = "南社社區介紹", color = androidx.compose.ui.graphics.Color.Green)
+                    Image(
+                        painterResource(id = R.drawable.population),
+                        contentDescription ="fly icon",
+                        modifier = Modifier.size(40.dp))
+                    Text(text = "南社社區介紹", color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(onClick = {
                     navController.navigate("JumpThird")
                 },
                     colors = ButtonDefaults.buttonColors
-                        (backgroundColor = androidx.compose.ui.graphics.Color.DarkGray),
+                        (backgroundColor = Color.Yellow),
                     shape = RoundedCornerShape(20.dp))
+
                 {
-                    Text(text = "瑪利亞基金會", color = androidx.compose.ui.graphics.Color.Green)
+                    Image(
+                        painterResource(id = R.drawable.location),
+                        contentDescription ="icon",
+                        modifier = Modifier.size(40.dp))
+                    Text(text = "瑪利亞基金會", color = Color.Black)
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Row() {
                 Button(onClick = {
                     navController.navigate("JumpForth")
-                }) {
+                },
+                    colors = ButtonDefaults.buttonColors
+                        (backgroundColor = Color.Cyan),
+                    shape = RoundedCornerShape(80.dp))
+                {
+                    Image(
+                        painterResource(id = R.drawable.flag),
+                        contentDescription ="icon",
+                        modifier = Modifier.size(40.dp))
                     Text(text = "國旗篇")
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-
+                Spacer(modifier = Modifier.width(10.dp))
                 Button(onClick = {
                     navController.navigate("JumpNine")
-                }) {
+                },colors = ButtonDefaults.buttonColors
+                    (backgroundColor = Color.Cyan),
+                    shape = RoundedCornerShape(80.dp))
+                {
+                    Image(
+                        painterResource(id = R.drawable.paw),
+                        contentDescription ="icon",
+                        modifier = Modifier.size(40.dp))
                     Text(text = "動物篇")
                 }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Row() {
+                Spacer(modifier = Modifier.width(10.dp))
                 Button(onClick = {
-                    navController.navigate("JumpSix")
-                }) {
+                    val url = "https://www.youtube.com/shorts/gCrDJcX_5Ac"
+                    uriHandler.openUri(url)
+                },colors = ButtonDefaults.buttonColors
+                    (backgroundColor = Color.White),
+                    shape = RoundedCornerShape(80.dp))
+                {
+                    Image(
+                        painterResource(id = R.drawable.smile),
+                        contentDescription ="icon",
+                        modifier = Modifier.size(20.dp))
                     Text(text = "好笑的")
                 }
+                Spacer(modifier = Modifier.width(10.dp))
+                    Button(onClick = {
+                        mper.reset()
+                        mper = MediaPlayer.create(context, R.raw.lucky)
+                        mper.start()
+                    },colors = ButtonDefaults.buttonColors
+                        (backgroundColor = Color.White),
+                        shape = RoundedCornerShape(80.dp))
+                    {
+                        Image(
+                            painterResource(id = R.drawable.sound),
+                            contentDescription ="icon",
+                            modifier = Modifier.size(20.dp))
+                        Text(text = "好聽的")
+                    }
+                }
+            Row() {
+
             }
         }
     }
@@ -1207,7 +1227,7 @@ fun TenScreen(navController: NavController) {
         } else {
             Button(
                 onClick = {
-                    twImageResourceId.value = R.drawable.circle
+                    twImageResourceId.value = R.drawable.nono
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.DarkGray
@@ -1226,7 +1246,7 @@ fun TenScreen(navController: NavController) {
         } else {
             Button(
                 onClick = {
-                    chImageResourceId.value = R.drawable.nono
+                    chImageResourceId.value = R.drawable.circle
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.DarkGray
